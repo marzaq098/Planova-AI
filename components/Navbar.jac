@@ -35,8 +35,8 @@ def:pub Navbar -> JsxElement {
             <nav className={nav_cls} aria-label="Primary">
                 <a href="#home" onClick={close_menu}>Home</a>
                 <a href="#features" onClick={close_menu}>Features</a>
-                <Link to="/dashboard" className="nav-login" onClick={close_menu}>Login</Link>
-                <Link to="/dashboard" className="nav-cta" onClick={close_menu}>Get Started</Link>
+                <Link to="/dashboard" className="nav-login" onClick={close_menu}>Explore demo</Link>
+                <Link to="/dashboard" className="nav-cta" onClick={close_menu}>Open workspace</Link>
             </nav>
         </div>
     </header>

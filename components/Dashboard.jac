@@ -75,9 +75,11 @@ def:pub Dashboard -> JsxElement {
 
     <AppShell title="Dashboard">
         <section className="dash-welcome">
-            <h1>Welcome to Planova AI!</h1>
-            <p>Here's your study overview for today.</p>
+            <p className="eyebrow">YOUR PLAN, AT A GLANCE</p>
+            <h1>Welcome to the demo workspace</h1>
+            <p>Explore tasks, build a study plan, and see how it adapts when a session is missed.</p>
         </section>
+        <p className="demo-notice"><span aria-hidden="true">ⓘ</span> This is a shared demo workspace. Changes may be visible to other people using this link. There are no user accounts yet.</p>
         {if error {
             <p className="notice error">{error}</p>
         }}
@@ -106,7 +108,7 @@ def:pub Dashboard -> JsxElement {
             <section className="panel" aria-labelledby="today-tasks-heading">
                 <h2 id="today-tasks-heading">Today's Tasks</h2>
                 {if not loading and len(tasks) == 0 {
-                    <p className="empty">No tasks yet. Add your first task.</p>
+                    <p className="empty">No assignments in the demo yet. Add a task, then visit the planner to build a schedule.</p>
                 }}
                 <ul className="task-list">
                     {for task in tasks {

@@ -63,7 +63,7 @@ def:pub Sidebar(open: bool, onClose: Callable[[], None]) -> JsxElement {
                     <path d="M4 12h10M12 9l3 3-3 3"></path>
                 </svg>
             </span>
-            Logout
+            Exit demo
         </Link>
     </aside>
 }
