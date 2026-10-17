@@ -1,4 +1,4 @@
-"""Top navigation for the Planova AI landing page."""
+﻿"""Top navigation for the Planova AI landing page."""
 
 import from "@jac/runtime" { Link }
 

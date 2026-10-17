@@ -113,9 +113,9 @@ This **Input → Analyze → Plan → Monitor → Adapt** workflow forms the fou
 | ----------------- | ------------------ |
 | Frontend          | Jac/Jaseci Web     |
 | Backend           | Jac/Jaseci Walkers |
-| AI Integration    | ByLLM (planned)    |
-| AI Model          | To be finalized    |
-| Data Storage      | To be finalized    |
+| AI Integration    | ByLLM              |
+| AI Model          | Anthropic Claude   |
+| Data Storage      | Jac graph (SQLite) |
 | Development Tools | VS Code            |
 | Version Control   | Git & GitHub       |
 
@@ -163,6 +163,10 @@ planova/
 ├── main.jac
 ├── jac.toml
 ├── store.jac
+├── backend/
+│   ├── api.jac
+│   ├── planova.ps1
+│   └── README.md
 ├── components/
 ├── pages/
 ├── assets/
@@ -175,14 +179,14 @@ planova/
     └── main.jac
 ```
 
-## &#x20;Getting Started
+## Getting Started
 
 ### Prerequisites
 
-- Python
-- Jac/Jaseci
+- Jac 0.37.17+ ([official setup guide](https://docs.jaseci.org/quick-guide/install/); Windows users should use WSL)
 - Git
 - VS Code
+
 
 Navigate into the directory containing `jac.toml`.
 
@@ -234,6 +238,69 @@ Web, Mobile, and CLI all call the same functions in `store.jac`. Until the teamm
 | `replan_missed_sessions` | Replan Missed Sessions |
 
 Do not invent HTTP URLs. Replace each `store.jac` body with the agreed walker or `def:pub` call when the backend is ready. Shared types are `Task` and `StudySession`.
+
+Install Jac, then install the project dependencies. The AI
+explanation is optional; deterministic scheduling works without a key.
+
+```bash
+jac install
+```
+
+Set `ANTHROPIC_API_KEY` in your shell. Keep it out of source control.
+
+```powershell
+$env:ANTHROPIC_API_KEY = "your-key"
+```
+
+Start the integrated web app and API from the repository root:
+
+```bash
+jac check .
+jac run --dev
+```
+
+For local development, open the URL printed by Jac. For production, deploy the
+Jac app to a reachable Jac host and use the host's URL; Jac serves the UI and
+walker endpoints from the same origin.
+
+### API and CLI
+
+The same walkers power the UI and REST API. Public walkers are available as
+JSON `POST` endpoints under `/walker/`:
+
+```bash
+export PLANOVA_API_URL="https://your-deployed-jac-host"
+curl -X POST "$PLANOVA_API_URL/walker/health"
+curl -X POST "$PLANOVA_API_URL/walker/list_tasks"
+curl -X POST "$PLANOVA_API_URL/walker/add_task" \
+  -H "Content-Type: application/json" \
+  -d '{"title":"Calculus assignment","description":"Chapter 4","deadline":"2026-10-24","priority":"High","estimated_hours":2.5}'
+curl -X POST "$PLANOVA_API_URL/walker/generate_study_plan" \
+  -H "Content-Type: application/json" \
+  -d '{"prompt":"Prepare for my upcoming exams","hours_per_day":3}'
+```
+
+Walker endpoints include `health`, `list_tasks`, `add_task`, `update_task`,
+`set_task_status`, `delete_task`, `list_sessions`, `set_session_status`,
+`generate_study_plan`, and `replan_missed_sessions`. Jac serves interactive API
+schemas at `/docs`. Use the Jac CLI to validate and run the service:
+
+The PowerShell CLI calls those same API endpoints:
+
+```powershell
+$env:PLANOVA_API_URL = "https://your-deployed-jac-host"
+.\backend\planova.ps1 -Action list_tasks
+.\backend\planova.ps1 -Action add_task -Json '{"title":"Calculus","deadline":"2026-10-24","priority":"High","estimated_hours":2}'
+.\backend\planova.ps1 -Action generate_study_plan -Json '{"prompt":"Study for exams","hours_per_day":3}'
+```
+
+```bash
+jac check .
+jac run --dev          # development server with hot reload
+jac run --no-dev       # serve without hot reload
+jac run --port 9000    # change the server port
+```
+
 
 ---
 

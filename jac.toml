@@ -1,11 +1,11 @@
+
 [project]
 name = "planova"
 version = "0.1.0"
-description = "Planova AI - AI-powered study planning"
+description = "Planova AI - adaptive AI study planning"
 jac-version = "==0.37.17"
 default-app = "planova"
 
-[dependencies]
 [dependencies.npm]
 react = "^19.2.0"
 react-dom = "^19.2.0"
@@ -24,13 +24,20 @@ typescript = "^5.3.3"
 [dev-dependencies]
 watchdog = ">=3.0.0"
 
-[client]
+[byllm.model]
+default_model = "claude-sonnet-4-6"
+
+[byllm.call_params]
+temperature = 0.2
+max_tokens = 1200
 
 [apps.planova.placement.pins]
 store = "client"
 
 [apps.mobile.placement.pins]
 store = "client"
+
+[client]
 
 [client.app_meta_data]
 title = "Planova AI"
@@ -60,3 +67,6 @@ lucide-react-native = "^0.469.0"
 [apps.cli]
 kind = "cli"
 entry-point = "cli.main"
+
+[scale.admin]
+enabled = false

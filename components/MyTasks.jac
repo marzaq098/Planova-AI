@@ -1,7 +1,7 @@
-"""My Tasks page. Uses backend task APIs when they are available."""
+﻿"""My Tasks page. Uses backend task APIs when they are available."""
 
 import from ..store {
-    Task, add_task, delete_task, list_tasks, set_task_status, update_task
+    Task, create_task, fetch_tasks, delete_task_api, update_existing_task, change_task_status
 }
 import from .AppShell { AppShell }
 
@@ -51,8 +51,8 @@ def:pub MyTasks -> JsxElement {
     has busy: bool = False;
     has error: str = "";
 
-    can with entry {
-        refresh();
+    async can with entry {
+        await refresh();
     }
 
     def clear_form {
@@ -64,10 +64,10 @@ def:pub MyTasks -> JsxElement {
         hours_text = "1";
     }
 
-    def refresh {
+    async def refresh {
         loading = True;
         error = "";
-        result = list_tasks();
+        result = await fetch_tasks();
         loading = False;
         if result.connected {
             tasks = result.items;
@@ -84,7 +84,7 @@ def:pub MyTasks -> JsxElement {
         return float(hours_text);
     }
 
-    def save_task {
+    async def save_task {
         if busy {
             return;
         }
@@ -102,22 +102,15 @@ def:pub MyTasks -> JsxElement {
                     current_status = t.status;
                 }
             }
-            result = update_task(Task(
-                id=editing_id,
-                title=title,
-                description=description,
-                deadline=deadline,
-                priority=priority,
-                status=current_status,
-                estimated_hours=hours
-            ));
+            result = await update_existing_task(editing_id, title, description,
+                deadline, priority, current_status, hours);
             busy = False;
             if not result.connected {
                 error = result.message;
                 return;
             }
         } else {
-            result = add_task(title, description, deadline, priority, hours);
+            result = await create_task(title, description, deadline, priority, hours);
             busy = False;
             if not result.connected {
                 error = result.message;
@@ -125,7 +118,7 @@ def:pub MyTasks -> JsxElement {
             }
         }
         clear_form();
-        refresh();
+        await refresh();
     }
 
     def edit_task(task_id: str) {
@@ -141,13 +134,13 @@ def:pub MyTasks -> JsxElement {
         }
     }
 
-    def remove_task(task_id: str) {
+    async def remove_task(task_id: str) {
         if busy {
             return;
         }
         busy = True;
         error = "";
-        result = delete_task(task_id);
+        result = await delete_task_api(task_id);
         busy = False;
         if not result.connected {
             error = result.message;
@@ -156,10 +149,10 @@ def:pub MyTasks -> JsxElement {
         if editing_id == task_id {
             clear_form();
         }
-        refresh();
+        await refresh();
     }
 
-    def toggle_task(task_id: str) {
+    async def toggle_task(task_id: str) {
         if busy {
             return;
         }
@@ -172,13 +165,13 @@ def:pub MyTasks -> JsxElement {
         next_status = "pending" if current == "completed" else "completed";
         busy = True;
         error = "";
-        result = set_task_status(task_id, next_status);
+        result = await change_task_status(task_id, next_status);
         busy = False;
         if not result.connected {
             error = result.message;
             return;
         }
-        refresh();
+        await refresh();
     }
 
     shown: list[Task] = tasks;

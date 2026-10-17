@@ -1,4 +1,4 @@
-"""Simple feature card used on the landing page."""
+﻿"""Simple feature card used on the landing page."""
 
 def:pub FeatureCard(title: str, description: str, icon: str) -> JsxElement {
     <article className="feature-card">

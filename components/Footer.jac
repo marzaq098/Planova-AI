@@ -1,4 +1,4 @@
-"""Minimal landing page footer."""
+﻿"""Minimal landing page footer."""
 
 def:pub Footer -> JsxElement {
     <footer className="site-footer">

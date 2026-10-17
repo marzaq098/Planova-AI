@@ -1,4 +1,4 @@
-"""App sidebar with links to existing frontend pages."""
+﻿"""App sidebar with links to existing frontend pages."""
 
 import from "@jac/runtime" { Link, useLocation }
 

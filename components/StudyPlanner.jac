@@ -1,7 +1,7 @@
-"""AI Study Planner page. Sends a student prompt and study hours to the backend planner."""
+﻿"""AI Study Planner page. Sends a student prompt and study hours to the backend planner."""
 
 import from ..store {
-    StudySession, Task, generate_study_plan, list_tasks, task_priority, task_title
+    StudySession, Task, create_study_plan, fetch_tasks, task_priority, task_title
 }
 import from .AppShell { AppShell }
 
@@ -37,18 +37,19 @@ def:pub StudyPlanner -> JsxElement {
     has hours_text: str = "3";
     has generating: bool = False;
     has generated: bool = False;
+    has rationale: str = "";
     has sessions: list[StudySession] = [];
     has tasks: list[Task] = [];
     has error: str = "";
 
-    can with entry {
-        task_result = list_tasks();
+    async can with entry {
+        task_result = await fetch_tasks();
         if task_result.connected {
             tasks = task_result.items;
         }
     }
 
-    def generate {
+    async def generate {
         if generating {
             return;
         }
@@ -63,17 +64,19 @@ def:pub StudyPlanner -> JsxElement {
         generating = True;
         generated = False;
         error = "";
+        rationale = "";
         sessions = [];
         hours = float(hours_text);
-        result = generate_study_plan(study_prompt, hours);
+        result = await create_study_plan(study_prompt, hours);
         generating = False;
         if result.connected {
             sessions = result.items;
+            rationale = result.message;
             generated = True;
         } else {
             sessions = [];
             generated = False;
-            error = "Unable to generate your plan right now. Please try again.";
+            error = result.message;
         }
     }
 
@@ -117,6 +120,9 @@ def:pub StudyPlanner -> JsxElement {
         </section>
         <section className="panel">
             <h2>Generated study plan</h2>
+            {if rationale {
+                <p className="planner-status">{rationale}</p>
+            }}
             {if not generated and not generating {
                 <p className="empty">Your study plan will appear here.</p>
             }}

@@ -1,4 +1,4 @@
-"""Shared sidebar layout for signed-in frontend pages."""
+﻿"""Shared sidebar layout for signed-in frontend pages."""
 
 import from .Sidebar { Sidebar }
 

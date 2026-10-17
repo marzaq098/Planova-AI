@@ -1,4 +1,4 @@
-"""Dashboard route at /dashboard."""
+﻿"""Dashboard route at /dashboard."""
 
 import from ..components.Dashboard { Dashboard }
 

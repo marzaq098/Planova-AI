@@ -1,15 +1,16 @@
-"""Weekly schedule page. Shows only sessions returned by the backend."""
+﻿"""Weekly schedule page. Shows only sessions returned by the backend."""
 
 import from ..store {
-    StudySession, Task, list_sessions, list_tasks, replan_missed_sessions,
-    set_session_status, task_title, unique_session_dates
+    StudySession, Task, fetch_sessions, fetch_tasks, rebuild_missed_sessions,
+    change_session_status, task_title, unique_session_dates
 }
 import from .AppShell { AppShell }
 
 def:pub SessionRow(
     session: StudySession,
     title: str,
-    onComplete: Callable[[str], None]
+    onComplete: Callable[[str], None],
+    onMiss: Callable[[str], None]
 ) -> JsxElement {
     row_cls = "session-row " + session.status;
     action_label = "Undo" if session.status == "completed" else "Mark completed";
@@ -21,6 +22,9 @@ def:pub SessionRow(
         <button className="text-btn" type="button" onClick={lambda { onComplete(session.id); }}>
             {action_label}
         </button>
+        {if session.status == "pending" {
+            <button className="text-btn danger" type="button" onClick={lambda { onMiss(session.id); }}>Mark missed</button>
+        }}
     </li>
 }
 
@@ -32,18 +36,18 @@ def:pub MySchedule -> JsxElement {
     has replanning: bool = False;
     has error: str = "";
 
-    can with entry {
-        refresh();
+    async can with entry {
+        await refresh();
     }
 
-    def refresh {
+    async def refresh {
         loading = True;
         error = "";
-        task_result = list_tasks();
+        task_result = await fetch_tasks();
         if task_result.connected {
             tasks = task_result.items;
         }
-        result = list_sessions();
+        result = await fetch_sessions();
         loading = False;
         if result.connected {
             sessions = result.items;
@@ -53,7 +57,7 @@ def:pub MySchedule -> JsxElement {
         }
     }
 
-    def complete_session(session_id: str) {
+    async def complete_session(session_id: str) {
         if busy {
             return;
         }
@@ -66,23 +70,46 @@ def:pub MySchedule -> JsxElement {
         next_status = "pending" if current == "completed" else "completed";
         busy = True;
         error = "";
-        result = set_session_status(session_id, next_status);
+        result = await change_session_status(session_id, next_status);
         busy = False;
         if not result.connected {
             error = result.message;
             return;
         }
-        refresh();
+        await refresh();
     }
 
-    def replan {
+    async def miss_session(session_id: str) {
+        if busy { return; }
+        busy = True;
+        replanning = True;
+        error = "";
+        result = await change_session_status(session_id, "missed");
+        if not result.connected {
+            busy = False;
+            replanning = False;
+            error = result.message;
+            return;
+        }
+        plan = await rebuild_missed_sessions();
+        busy = False;
+        replanning = False;
+        if plan.connected {
+            sessions = plan.items;
+        } else {
+            error = plan.message;
+            await refresh();
+        }
+    }
+
+    async def replan {
         if busy {
             return;
         }
         busy = True;
         replanning = True;
         error = "";
-        result = replan_missed_sessions();
+        result = await rebuild_missed_sessions();
         busy = False;
         replanning = False;
         if result.connected {
@@ -125,6 +152,7 @@ def:pub MySchedule -> JsxElement {
                                 session={session}
                                 title={task_title(tasks, session.task_id)}
                                 onComplete={complete_session}
+                                onMiss={miss_session}
                             />
                         }}
                     </ul>

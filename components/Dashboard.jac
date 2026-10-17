@@ -1,7 +1,7 @@
-"""Dashboard overview. Statistics come from loaded task data only."""
+﻿"""Dashboard overview. Statistics come from loaded task data only."""
 
 import from "@jac/runtime" { Link }
-import from ..store { Task, list_tasks, set_task_status }
+import from ..store { Task, fetch_tasks, change_task_status }
 import from .AppShell { AppShell }
 
 def:pub DashTaskRow(task: Task, onToggle: Callable[[str], None]) -> JsxElement {
@@ -29,14 +29,14 @@ def:pub Dashboard -> JsxElement {
     has busy: bool = False;
     has error: str = "";
 
-    can with entry {
-        refresh();
+    async can with entry {
+        await refresh();
     }
 
-    def refresh {
+    async def refresh {
         loading = True;
         error = "";
-        result = list_tasks();
+        result = await fetch_tasks();
         loading = False;
         if result.connected {
             tasks = result.items;
@@ -46,7 +46,7 @@ def:pub Dashboard -> JsxElement {
         }
     }
 
-    def toggle_task(task_id: str) {
+    async def toggle_task(task_id: str) {
         if busy {
             return;
         }
@@ -59,13 +59,13 @@ def:pub Dashboard -> JsxElement {
         next_status = "pending" if current == "completed" else "completed";
         busy = True;
         error = "";
-        result = set_task_status(task_id, next_status);
+        result = await change_task_status(task_id, next_status);
         busy = False;
         if not result.connected {
             error = result.message;
             return;
         }
-        refresh();
+        await refresh();
     }
 
     total = len(tasks);

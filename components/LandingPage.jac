@@ -1,4 +1,4 @@
-"""Public landing page for Planova AI."""
+﻿"""Public landing page for Planova AI."""
 
 import from "@jac/runtime" { Link }
 import from .Navbar { Navbar }

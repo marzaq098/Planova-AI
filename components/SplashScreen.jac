@@ -1,4 +1,4 @@
-"""Centered splash screen shown before the landing page."""
+﻿"""Centered splash screen shown before the landing page."""
 
 def:pub SplashScreen(fading: bool = False) -> JsxElement {
     splash_cls = "splash fading" if fading else "splash";

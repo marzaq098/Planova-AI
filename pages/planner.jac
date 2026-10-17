@@ -1,4 +1,4 @@
-"""AI Study Planner route at /planner."""
+﻿"""AI Study Planner route at /planner."""
 
 import from ..components.StudyPlanner { StudyPlanner }
 

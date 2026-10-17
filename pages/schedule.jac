@@ -1,4 +1,4 @@
-"""My Schedule route at /schedule."""
+﻿"""My Schedule route at /schedule."""
 
 import from ..components.MySchedule { MySchedule }
 
