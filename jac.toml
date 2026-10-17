@@ -2,9 +2,8 @@
 name = "planova"
 version = "0.1.0"
 description = "Planova AI - AI-powered study planning"
-entry-point = "main"
-kind = "web-static"
 jac-version = "==0.37.17"
+default-app = "planova"
 
 [dependencies]
 [dependencies.npm]
@@ -27,10 +26,37 @@ watchdog = ">=3.0.0"
 
 [client]
 
-[placement.pins]
+[apps.planova.placement.pins]
+store = "client"
+
+[apps.mobile.placement.pins]
 store = "client"
 
 [client.app_meta_data]
 title = "Planova AI"
 description = "Plan Smarter. Study Better. Achieve More."
 theme_color = "#6D5EF0"
+
+[apps.planova]
+kind = "web-static"
+entry-point = "main"
+
+[apps.mobile]
+kind = "mobile"
+entry-point = "mobile.main"
+
+[apps.mobile.dependencies.npm]
+react = "^18.2.0"
+react-dom = "^18.2.0"
+react-native-web = "^0.19.13"
+react-native-svg = "^15.13.0"
+lucide-react = "^0.469.0"
+lucide-react-native = "^0.469.0"
+
+[apps.mobile.dependencies.npm.native]
+react-native-svg = "^15.13.0"
+lucide-react-native = "^0.469.0"
+
+[apps.cli]
+kind = "cli"
+entry-point = "cli.main"

@@ -164,20 +164,15 @@ planova/
 ├── jac.toml
 ├── store.jac
 ├── components/
-│   ├── AppShell.jac
-│   ├── Sidebar.jac
-│   ├── Dashboard.jac
-│   ├── MyTasks.jac
-│   ├── StudyPlanner.jac
-│   └── MySchedule.jac
 ├── pages/
-│   ├── index.jac
-│   ├── dashboard.jac
-│   ├── tasks.jac
-│   ├── planner.jac
-│   └── schedule.jac
-└── assets/
-    └── global.css
+├── assets/
+├── mobile/
+│   ├── main.jac
+│   ├── theme.jac
+│   ├── screens/
+│   └── components/
+└── cli/
+    └── main.jac
 ```
 
 ## &#x20;Getting Started
@@ -189,19 +184,56 @@ planova/
 - Git
 - VS Code
 
+Navigate into the directory containing `jac.toml`.
 
-Navigate into the directory containing `jac.toml` and `main.jac`.
-
-Run the application:
+**Web**
 
 ```bash
 jac check .
-jac run --dev --no-cache main.jac
+jac run --dev --no-cache
 ```
 
-Open the local URL shown in the terminal, typically:
+Or: `jac run --dev --no-cache planova`
 
-`http://localhost:8000`
+Open the local URL shown in the terminal, typically `http://localhost:8000`.
+
+**Mobile** (browser preview; run this instead of the web command, not at the same time)
+
+```bash
+jac install
+jac run --dev --no-cache --platform web mobile
+```
+
+Open the App URL printed in the terminal (often `http://localhost:8000` or `/cl/mobile/`). Do not run this at the same time as the web command.
+
+For a device or simulator after one-time setup:
+
+```bash
+jac setup mobile
+jac run --dev mobile
+```
+
+**CLI**
+
+```bash
+jac run cli
+```
+
+Run only one frontend at a time. Web and Mobile share the Jac client preview folder, so starting one rewrites the preview entry for that app.
+
+### What waits on the backend
+
+Web, Mobile, and CLI all call the same functions in `store.jac`. Until the teammate wires those to Jac walkers, the UIs stay empty and show a connection message. No sample tasks, fake schedules, or simulated AI replies are generated.
+
+| Function | Used for |
+| --- | --- |
+| `list_tasks` | Dashboard counts, My Tasks |
+| `add_task` / `update_task` / `delete_task` / `set_task_status` | Task create, edit, delete, complete |
+| `generate_study_plan(prompt, hours_per_day)` | AI Study Planner |
+| `list_sessions` / `set_session_status` | My Schedule |
+| `replan_missed_sessions` | Replan Missed Sessions |
+
+Do not invent HTTP URLs. Replace each `store.jac` body with the agreed walker or `def:pub` call when the backend is ready. Shared types are `Task` and `StudySession`.
 
 ---
 
@@ -242,7 +274,6 @@ Planova AI aims to:
 - Student authentication.
 - Academic performance analytics.
 - Calendar integration.
-- Mobile application support.
 
 ---
 
