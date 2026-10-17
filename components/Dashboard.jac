@@ -1,6 +1,6 @@
 ﻿"""Dashboard overview. Statistics come from loaded task data only."""
 
-import from "@jac/runtime" { Link }
+import from "@jac/runtime" { Link, jacIsLoggedIn }
 import from ..store { Task, fetch_tasks, change_task_status }
 import from .AppShell { AppShell }
 
@@ -24,6 +24,7 @@ def:pub DashTaskRow(task: Task, onToggle: Callable[[str], None]) -> JsxElement {
 }
 
 def:pub Dashboard -> JsxElement {
+    signed_in = jacIsLoggedIn();
     has tasks: list[Task] = [];
     has loading: bool = True;
     has busy: bool = False;
@@ -76,10 +77,17 @@ def:pub Dashboard -> JsxElement {
     <AppShell title="Dashboard">
         <section className="dash-welcome">
             <p className="eyebrow">YOUR PLAN, AT A GLANCE</p>
-            <h1>Welcome to the demo workspace</h1>
-            <p>Explore tasks, build a study plan, and see how it adapts when a session is missed.</p>
+            {if signed_in {
+                <h1>Welcome to your private workspace</h1>
+                <p>Your study data is saved to your account. Build a plan and adjust it as your week changes.</p>
+            } else {
+                <h1>Welcome to the shared demo</h1>
+                <p>Explore tasks, build a study plan, and see how it adapts when a session is missed.</p>
+            }}
         </section>
-        <p className="demo-notice"><span aria-hidden="true">ⓘ</span> This is a shared demo workspace. Changes may be visible to other people using this link. There are no user accounts yet.</p>
+        {if not signed_in {
+            <p className="demo-notice"><span aria-hidden="true">ⓘ</span> Shared demo data is visible to visitors using this link. <Link to="/signup">Create a free account</Link> for a private workspace.</p>
+        }}
         {if error {
             <p className="notice error">{error}</p>
         }}

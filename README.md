@@ -247,6 +247,28 @@ $env:PLANOVA_API_URL = "https://your-deployed-jac-host"
 .\backend\planova.ps1 -Action generate_study_plan -Json '{"prompt":"Study for exams","hours_per_day":3}'
 ```
 
+### Demo and accounts
+
+The public dashboard is an anonymous shared demo. Its banner warns visitors
+that demo changes are shared. Students can create an account or sign in from
+the landing page; Jac issues a session and runs the same public task walkers
+against that signed-in user's isolated graph root. The planner and missed
+session adaptation remain available on the free plan.
+
+### Premium plans
+
+The plans page proposes Premium at `$3.99/month` or `$29.99/year`, with a
+3-day trial requiring a payment method. Premium ideas include multi-week exam
+plans, workload insights, AI study coaching, and calendar export. The page is
+currently a transparent preview: paid checkout and feature entitlements are
+not active, and no payment is collected. Before launch, configure a payment
+merchant, hosted card/PayPal checkout, verified provider webhooks, and server
+secrets. Never accept card numbers directly in Planova or commit provider keys.
+
+The Anthropic key is read from `ANTHROPIC_API_KEY`; keep it in a local
+environment or deployment secret store. Do not commit `.env` files or paste
+keys into chat.
+
 ```bash
 jac check .
 jac run --dev          # development server with hot reload

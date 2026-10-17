@@ -19,8 +19,9 @@ def:pub LandingPage -> JsxElement {
                         </p>
                         <div className="hero-actions">
                             <Link to="/dashboard" className="btn-primary">Try the live demo <span aria-hidden="true">→</span></Link>
-                            <a className="btn-secondary" href="#how-it-works">See how it works</a>
+                            <Link to="/signup" className="btn-secondary">Create your workspace</Link>
                         </div>
+                        <a className="hero-text-link" href="#how-it-works">See how the adaptive plan works ↓</a>
                         <p className="hero-note">No account needed · Shared hackathon demo workspace</p>
                     </div>
                     <div className="hero-visual" aria-label="Preview of an adaptive study schedule">
@@ -49,6 +50,10 @@ def:pub LandingPage -> JsxElement {
                     <article className="step-card"><span className="step-number">02</span><span className="step-icon">◷</span><h3>Plan your hours</h3><p>Build a schedule around the study time you actually have available.</p></article>
                     <article className="step-card step-featured"><span className="step-number">03</span><span className="step-icon">⟳</span><h3>Adapt when plans change</h3><p>Mark a session missed. Planova rechecks deadlines and reorganizes the remaining work.</p></article>
                 </div>
+            </section>
+            <section className="account-bridge">
+                <div><p className="eyebrow">READY TO MAKE IT YOURS?</p><h2>Start free. Keep your study data private.</h2><p>Create an account for your own workspace. Want to explore first? The shared demo is ready with no sign-in.</p></div>
+                <div className="account-bridge-actions"><Link to="/signup" className="btn-primary">Create free account</Link><Link to="/dashboard" className="text-btn">Continue to shared demo</Link></div>
             </section>
             <section id="features" className="features">
                 <div className="features-inner">

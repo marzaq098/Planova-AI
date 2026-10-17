@@ -1,11 +1,15 @@
 ﻿"""App sidebar with links to existing frontend pages."""
 
-import from "@jac/runtime" { Link, useLocation }
+import from "@jac/runtime" { Link, useLocation, jacIsLoggedIn, jacLogout }
 
 def:pub Sidebar(open: bool, onClose: Callable[[], None]) -> JsxElement {
     location = useLocation();
     path = location.pathname;
     side_cls = "sidebar open" if open else "sidebar";
+
+    def leave_workspace {
+        if jacIsLoggedIn() { jacLogout(); }
+    }
 
     def item_cls(href: str) -> str {
         return "side-link active" if path == href else "side-link";
@@ -56,14 +60,14 @@ def:pub Sidebar(open: bool, onClose: Callable[[], None]) -> JsxElement {
                 My Schedule
             </Link>
         </nav>
-        <Link to="/" className="side-link logout" onClick={onClose}>
+        <Link to="/" className="side-link logout" onClick={leave_workspace}>
             <span className="side-icon" aria-hidden="true">
                 <svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" strokeWidth="1.8">
                     <path d="M10 7V5.5A1.5 1.5 0 0 1 11.5 4h7A1.5 1.5 0 0 1 20 5.5v13a1.5 1.5 0 0 1-1.5 1.5h-7A1.5 1.5 0 0 1 10 18.5V17"></path>
                     <path d="M4 12h10M12 9l3 3-3 3"></path>
                 </svg>
             </span>
-            Exit demo
+            {"Sign out" if jacIsLoggedIn() else "Exit demo"}
         </Link>
     </aside>
 }
