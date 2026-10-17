@@ -1,0 +1,12 @@
+.jac/
+jac.local.toml
+__pycache__/
+*.py[cod]
+node_modules/
+packages/
+*.jbc
+*.jir
+*.session
+*.session.*
+.venv/
+venv/
